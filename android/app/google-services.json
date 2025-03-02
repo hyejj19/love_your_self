@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "181440086624",
+    "project_id": "love-your-self-b3343",
+    "storage_bucket": "love-your-self-b3343.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181440086624:android:5c2d0f5875bf46e4543905",
+        "android_client_info": {
+          "package_name": "com.example.love_your_self"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGyCMJRWh10w-bqP8c3WjEeVtnjUhRDNE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
