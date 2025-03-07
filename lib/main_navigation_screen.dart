@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:love_your_self/features/home/home_screen.dart';
 import 'package:love_your_self/widgets/nav_tab.dart';
 
@@ -16,6 +18,18 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  final List<String> _tabs = ["home", "post"];
+
+  late int _selectedIndex = _tabs.indexOf(widget.tab);
+
+  void _onTap(int index) {
+    context.go("/${_tabs[index]}");
+
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -27,9 +41,17 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       body: Stack(
         children: [
           Offstage(
-            offstage: widget.tab != 'home',
+            offstage: _selectedIndex != 0,
             child: Scaffold(
               body: HomeScreen(),
+            ),
+          ),
+          Offstage(
+            offstage: _selectedIndex != 1,
+            child: Scaffold(
+              body: Center(
+                child: Text('Post'),
+              ),
             ),
           ),
         ],
@@ -48,8 +70,20 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              NavTab(),
-              NavTab(),
+              NavTab(
+                icon: FontAwesomeIcons.house,
+                color: widget.tab == 'home'
+                    ? Colors.black87
+                    : Colors.grey.shade400,
+                onTap: () => _onTap(0),
+              ),
+              NavTab(
+                icon: FontAwesomeIcons.pen,
+                color: widget.tab == 'post'
+                    ? Colors.black87
+                    : Colors.grey.shade400,
+                onTap: () => _onTap(1),
+              ),
             ],
           ),
         ),
