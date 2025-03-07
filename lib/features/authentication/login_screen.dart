@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:love_your_self/features/authentication/signup_screen.dart';
+import 'package:love_your_self/features/home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static String routePath = '/';
@@ -14,6 +15,40 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Map<String, String> formData = {};
+  bool _isAbleToLogin = false;
+
+  void _updateLoginButtonState() {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    setState(() {
+      _isAbleToLogin = isValid;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _emailController.addListener(_updateLoginButtonState);
+    _passwordController.addListener(_updateLoginButtonState);
+  }
+
+  void _onSingin() {
+    if (_formKey.currentState != null) {
+      if (_formKey.currentState!.validate()) {
+        _formKey.currentState!.save();
+
+        context.goNamed(HomeScreen.routeName);
+      }
+    }
+  }
+
   void _onTapSignup() {
     context.push(SignupScreen.routePath);
   }
@@ -48,63 +83,88 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Image.asset(
                           'assets/images/mood_tracker_app_icon.png')),
                   const Gap(60),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade400,
+                  Form(
+                    key: _formKey,
+                    child: Column(children: [
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          hintText: 'Email',
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
                         ),
+                        validator: (value) {
+                          if (value != null && value.isEmpty) {
+                            return "Please enter your email.";
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) {
+                          if (newValue != null) {
+                            formData['email'] = newValue;
+                          }
+                        },
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
+                      const Gap(4),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
                         ),
+                        validator: (value) {
+                          if (value != null && value.isEmpty) {
+                            return "Please enter your password.";
+                          }
+                          return null;
+                        },
+                        onSaved: (newValue) {
+                          if (newValue != null) {
+                            formData['password'] = newValue;
+                          }
+                        },
                       ),
-                    ),
-                    validator: (value) {
-                      if (value != null && value.isEmpty) {
-                        return "Please enter your email.";
-                      }
-                      return null;
-                    },
-                  ),
-                  const Gap(4),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey.shade400,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value != null && value.isEmpty) {
-                        return "Please enter your password.";
-                      }
-                      return null;
-                    },
+                    ]),
                   ),
                   const Gap(20),
-                  FractionallySizedBox(
-                    widthFactor: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Text(
-                        'Sign in',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey.shade500,
+                  GestureDetector(
+                    onTap: _onSingin,
+                    child: FractionallySizedBox(
+                      widthFactor: 1,
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            color: _isAbleToLogin
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Text(
+                          'Sign in',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: _isAbleToLogin
+                                ? Colors.white
+                                : Colors.grey.shade500,
+                          ),
                         ),
                       ),
                     ),

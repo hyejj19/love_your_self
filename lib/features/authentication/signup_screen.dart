@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 
 class SignupScreen extends StatefulWidget {
   static String routePath = '/signup';
