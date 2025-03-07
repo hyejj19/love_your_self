@@ -54,7 +54,7 @@ class HomePage extends ConsumerWidget {
             titleTextStyle: TextStyle(
               color: Colors.black,
               fontSize: 18,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w500,
             ),
           ),
           bottomAppBarTheme: const BottomAppBarTheme(

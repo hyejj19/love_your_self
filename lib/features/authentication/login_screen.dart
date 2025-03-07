@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:love_your_self/features/authentication/signup_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   static String routePath = '/';
   static String routeName = 'login';
 
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  void _onTapSignup() {
+    context.push(SignupScreen.routePath);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +100,7 @@ class LoginScreen extends StatelessWidget {
                           color: Colors.grey.shade200,
                           borderRadius: BorderRadius.circular(10)),
                       child: Text(
-                        'Login',
+                        'Sign in',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
@@ -105,12 +116,15 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-          child: Text(
-            'Sign up',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+          child: GestureDetector(
+            onTap: _onTapSignup,
+            child: Text(
+              'Sign up',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ));
