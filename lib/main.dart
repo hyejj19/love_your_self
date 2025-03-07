@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:love_your_self/firebase_options.dart';
+import 'package:love_your_self/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const ProviderScope(child: MyApp()));
 }
-
-final authProvider = Provider<FirebaseAuth>((ref) => FirebaseAuth.instance);
-final firestoreProvider =
-    Provider<FirebaseFirestore>((ref) => FirebaseFirestore.instance);
-final storageProvider =
-    Provider<FirebaseStorage>((ref) => FirebaseStorage.instance);
-
-final userProvider = FutureProvider<User?>((ref) async {
-  final auth = ref.read(authProvider);
-  return auth.currentUser ?? (await auth.signInAnonymously()).user;
-});
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -51,32 +39,28 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userAsync = ref.watch(userProvider);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
-      body: userAsync.when(
-        data: (user) => user != null
-            ? UserProfile(user: user)
-            : const CircularProgressIndicator(),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
-      ),
-    );
-  }
-}
-
-class UserProfile extends ConsumerWidget {
-  final User user;
-  const UserProfile({super.key, required this.user});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('User ID: ${user.uid}'),
-      ],
+    return MaterialApp.router(
+      title: 'Mood Tracker',
+      routerConfig: router,
+      theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          primaryColor: const Color(0xff80CBC4),
+          highlightColor: const Color(0xffFFB433),
+          splashColor: Colors.white,
+          appBarTheme: const AppBarTheme(
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            titleTextStyle: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          bottomAppBarTheme: const BottomAppBarTheme(
+            color: Colors.white,
+            elevation: 0,
+          )),
     );
   }
 }
