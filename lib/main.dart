@@ -48,6 +48,7 @@ class HomePage extends ConsumerWidget {
           highlightColor: const Color(0xffFFB433),
           splashColor: Colors.white,
           appBarTheme: const AppBarTheme(
+            shadowColor: Colors.transparent,
             foregroundColor: Colors.black,
             backgroundColor: Colors.white,
             elevation: 0,

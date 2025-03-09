@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:love_your_self/features/home/home_screen.dart';
+import 'package:love_your_self/features/post/post_screen.dart';
 import 'package:love_your_self/widgets/nav_tab.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -43,15 +44,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           Offstage(
             offstage: _selectedIndex != 0,
             child: Scaffold(
-              body: HomeScreen(),
+              body: const HomeScreen(),
             ),
           ),
           Offstage(
             offstage: _selectedIndex != 1,
             child: Scaffold(
-              body: Center(
-                child: Text('Post'),
-              ),
+              body: const PostScreen(),
             ),
           ),
         ],
