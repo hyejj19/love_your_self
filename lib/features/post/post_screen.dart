@@ -37,22 +37,24 @@ class _PostScreenState extends ConsumerState<PostScreen> {
       if (user != null) {
         try {
           Mood mood = Mood(
-              mood: _selectedMood!,
-              content: _moodController.text,
-              created: FieldValue.serverTimestamp().toString());
+            mood: _selectedMood!,
+            content: _moodController.text,
+            created: Timestamp.now(), // 올바른 Timestamp 사용
+            userId: user.uid,
+          );
 
           await ref
               .read(moodViewModelProvider.notifier)
               .postMoodData(mood, user.uid);
 
+          _selectedMood = null;
+          _moodController.clear();
+
+          ref.read(moodViewModelProvider.notifier).fetchMoodData(user.uid);
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('포스팅에 성공했어요!')),
           );
-
-          setState(() {
-            _selectedMood = null;
-            _moodController.clear();
-          });
 
           context.go("/home");
         } catch (e) {

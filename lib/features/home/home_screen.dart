@@ -100,7 +100,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                         return ListTile(
                           title: Text(mood.content),
-                          subtitle: Text(mood.created),
+                          subtitle: Text(mood.created.toDate().toString()),
                           leading: Text(
                             _getMoodIcon(mood.mood),
                             style: TextStyle(fontSize: 30),

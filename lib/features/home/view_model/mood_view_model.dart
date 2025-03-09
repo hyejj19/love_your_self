@@ -39,9 +39,11 @@ class MoodViewModel extends StateNotifier<MoodState> {
     try {
       state = state.copyWith(isLoading: true);
 
+      print(userId);
       QuerySnapshot snapshot = await _firestore
           .collection('moods')
           .where('userId', isEqualTo: userId)
+          .orderBy('created', descending: true)
           .get();
 
       if (snapshot.docs.isEmpty) {
