@@ -17,6 +17,16 @@ class AuthModel {
     }
   }
 
+  Future<User?> signUp(String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      return userCredential.user;
+    } catch (e) {
+      throw Exception('Signup failed: $e');
+    }
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
   }

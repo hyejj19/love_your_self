@@ -12,8 +12,16 @@ class AuthViewModel extends StateNotifier<User?> {
       User? user = await authModel.signIn(email, password);
       state = user;
     } catch (e) {
-      print('끼약');
       throw Exception('Login failed: $e');
+    }
+  }
+
+  Future<void> signUp(String email, String password) async {
+    try {
+      User? user = await authModel.signUp(email, password);
+      state = user;
+    } catch (e) {
+      throw Exception('Signup failed: $e');
     }
   }
 

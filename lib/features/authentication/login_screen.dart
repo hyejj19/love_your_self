@@ -60,7 +60,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           context.go("/${HomeScreen.routeName}");
         }
       } catch (e) {
-        print('에러발생!!');
         if (mounted) {
           showDialog(
             context: context,
