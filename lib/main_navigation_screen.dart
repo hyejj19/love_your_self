@@ -21,14 +21,8 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final List<String> _tabs = ["home", "post"];
 
-  late int _selectedIndex = _tabs.indexOf(widget.tab);
-
   void _onTap(int index) {
     context.go("/${_tabs[index]}");
-
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 
   @override
@@ -42,13 +36,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       body: Stack(
         children: [
           Offstage(
-            offstage: _selectedIndex != 0,
+            offstage: widget.tab != 'home',
             child: Scaffold(
               body: const HomeScreen(),
             ),
           ),
           Offstage(
-            offstage: _selectedIndex != 1,
+            offstage: widget.tab != 'post',
             child: Scaffold(
               body: const PostScreen(),
             ),

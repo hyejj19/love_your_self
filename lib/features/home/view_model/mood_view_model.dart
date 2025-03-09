@@ -36,7 +36,6 @@ class MoodViewModel extends StateNotifier<MoodState> {
   MoodViewModel() : super(MoodState.initial());
 
   Future<void> fetchMoodData(String userId) async {
-    print(_firestore);
     try {
       state = state.copyWith(isLoading: true);
 
@@ -58,6 +57,15 @@ class MoodViewModel extends StateNotifier<MoodState> {
       state = state.copyWith(hasData: false, isLoading: false);
       print("Error fetching data: $e");
     }
+  }
+
+  Future<void> postMoodData(Mood mood, String userId) async {
+    await _firestore.collection('moods').add({
+      'userId': userId,
+      'mood': mood.mood,
+      'content': mood.content,
+      'created': mood.created,
+    });
   }
 }
 

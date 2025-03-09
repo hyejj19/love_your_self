@@ -49,13 +49,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final authViewModel = ref.read(authViewModelProvider.notifier);
 
       try {
-        // 로그인 시도
         await authViewModel.signIn(
           _emailController.text,
           _passwordController.text,
         );
 
-        // 로그인 성공 시 HomeScreen으로 이동
         if (mounted) {
           context.go("/${HomeScreen.routeName}");
         }
