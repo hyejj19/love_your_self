@@ -1,18 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:love_your_self/mock/mock_mood_list.dart';
+import 'package:go_router/go_router.dart';
+import 'package:love_your_self/features/authentication/login_screen.dart';
+import 'package:love_your_self/features/authentication/view_models/auth_view_model.dart';
+import 'package:love_your_self/features/home/models/mood_model.dart';
+import 'package:love_your_self/features/home/view_model/mood_view_model.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   static String routePath = '/home';
   static String routeName = 'home';
 
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   String _getMoodIcon(String mood) {
     if (mood == 'EXCITED') return '🤩';
     if (mood == 'HAPPY') return '🥰';
@@ -23,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return '👻';
   }
 
-  void _showMoodDetail(BuildContext context, Map<String, dynamic> mood) {
+  void _showMoodDetail(BuildContext context, Mood mood) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -41,12 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  _getMoodIcon(mood["mood"]),
+                  _getMoodIcon(mood.mood),
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 const Gap(10),
                 Text(
-                  mood["content"] ?? "No content",
+                  mood.content ?? "No content",
                   style: TextStyle(fontSize: 18),
                 ),
                 const Gap(20),
@@ -63,29 +69,47 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    User? user = ref.read(authViewModelProvider);
+    if (user != null) {
+      ref.read(moodViewModelProvider.notifier).fetchMoodData(user.uid);
+    } else {
+      context.go(LoginScreen.routePath);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final moodState = ref.watch(moodViewModelProvider);
+
     return Scaffold(
       appBar: AppBar(title: Text('Mood list')),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
-          child: ListView.separated(
-            separatorBuilder: (context, index) => const Gap(10),
-            itemCount: MOCK_MOOD_LIST.length,
-            itemBuilder: (context, index) {
-              final mood = MOCK_MOOD_LIST[index];
+          child: moodState.isLoading
+              ? Center(child: CircularProgressIndicator())
+              : moodState.hasData
+                  ? ListView.separated(
+                      separatorBuilder: (context, index) => const Gap(10),
+                      itemCount: moodState.moods.length,
+                      itemBuilder: (context, index) {
+                        final mood = moodState.moods[index];
 
-              return ListTile(
-                title: Text(mood["content"] ?? "No content"),
-                subtitle: Text(mood["created"] ?? ""),
-                leading: Text(
-                  _getMoodIcon(mood["mood"]),
-                  style: TextStyle(fontSize: 30),
-                ),
-                onTap: () => _showMoodDetail(context, mood),
-              );
-            },
-          ),
+                        return ListTile(
+                          title: Text(mood.content),
+                          subtitle: Text(mood.created),
+                          leading: Text(
+                            _getMoodIcon(mood.mood),
+                            style: TextStyle(fontSize: 30),
+                          ),
+                          onTap: () => _showMoodDetail(context, mood),
+                        );
+                      },
+                    )
+                  : Center(child: Text('무드 데이터가 존재하지 않습니다!')),
         ),
       ),
     );

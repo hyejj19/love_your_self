@@ -155,6 +155,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const Gap(4),
                       TextFormField(
                         controller: _passwordController,
+                        obscureText: true,
                         decoration: InputDecoration(
                           hintText: 'Password',
                           enabledBorder: OutlineInputBorder(
